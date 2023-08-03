@@ -43,7 +43,7 @@ pip3 install .
 
 Okay you need to do some configuration before this will do anything useful for you. Some configurations are required (last.fm) and others are optional (Pushover).
 
-You need to [get a last.fm API account][lastfmapi]. It's easy and immediate. Once you have a key and a secret, put them in `~/.config/cdscrobble.toml`:
+You need to [get a last.fm API account][lastfmapi]. It's easy and immediate. Once you have a key and a secret, put them in `~/.config/scrobble.toml`:
 
 [lastfmapi]: https://www.last.fm/api/account/create "Create a last.fm API account."
 
