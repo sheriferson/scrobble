@@ -1,0 +1,10 @@
+0.1.0 (2023-08-02):
+    * Initial release on GitHub and PyPI.
+    * `scrobble` is intended to be a general/omni-scrobbling tool that works with different tracklists.
+    * To start, `scrobble` works with CD barcodes.
+    * Supports multi disc releases.
+    * Uses MusicBrainz as the source of CD and track metadata.
+    * Accepts an optional `PLAYBACKEND` argument in natural language if you want to scrobble a CD you listened to a while ago. e.g., `scrobble 016861828257 '2 hours ago'`.
+    * A `--dryrun` option if you just want to see a tracklist without sending anything to your last.fm account.
+    * A `--notify` option if you want to get a Pushover.net notification. Requires a Pushover app API token and a user key.
+    * If the barcode matches more than one release, the tool will ask you to choose. This matters because sometimes the tracklist is different (how releases that different end up with the same barcode is... pfff I don't know). If you want to yolo it, you can pass `--no-choice` and have the tool pick the first match.

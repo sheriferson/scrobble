@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scrobble"
+version = "0.1.0"
+description = "Scrobble CDs to your last.fm account."
+readme = "README.md"
+authors = [{ name = "Sherif Soliman", email = "hi@sherif.io" }]
+license = { file = "LICENSE" }
+keywords = ["last.fm", "scrobble", "cd", "music"]
+requires-python = ">=3.11"
+classifiers = [
+    "Topic :: Utilities",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "musicbrainzngs",
+    "parsedatetime",
+    "pylast",
+    "python-dateutil",
+    "rich",
+    "typer[all]",
+]
+
+[project.urls]
+Homepage = "https://github.com/sheriferson/scrobble"
+
+[project.scripts]
+scrobble = "scrobble.app:main"

@@ -1,0 +1,6 @@
+musicbrainzngs
+parsedatetime
+pylast
+python-dateutil
+rich
+typer[all]
