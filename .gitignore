@@ -1,5 +1,6 @@
-.coverage
 *egg-info
+.coverage
 __pycache__
 build
+coverage.xml
 dist
