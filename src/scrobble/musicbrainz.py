@@ -111,6 +111,9 @@ class CD:
     def __str__(self):
         return f"💿 {self.artist} - {self.title} ({self.year})"
 
+    def __len__(self):
+        return len(self.tracks)
+
 
 def init_musicbrainz(useragent: UserAgent):
     musicbrainzngs.set_useragent(useragent.agent, useragent.version, useragent.url)
