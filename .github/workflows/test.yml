@@ -23,6 +23,7 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
+          pip install -e .
           python -m pytest --cov=scrobble --cov-report=xml --cov-report=html
 
       - name: Upload coverage reports to Codecov
