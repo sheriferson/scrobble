@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [{ name = "Sherif Soliman", email = "hi@sherif.io" }]
 license = { file = "LICENSE" }
 keywords = ["last.fm", "scrobble", "cd", "music"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Topic :: Utilities",
     "Programming Language :: Python :: 3",
