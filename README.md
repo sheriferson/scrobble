@@ -158,6 +158,6 @@ $ scrobble --no-choice --notify 018777371520
 
 ## Missing
 
-- Tests.
 - Docs.
 - Other features.
+- More tests.

@@ -24,6 +24,12 @@ dependencies = [
     "typer[all]",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov"
+]
+
 [project.urls]
 Homepage = "https://github.com/sheriferson/scrobble"
 

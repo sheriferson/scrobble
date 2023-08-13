@@ -14,11 +14,8 @@ class Config:
     pushoverapi: Optional[dict[str, str]] = None
 
     def __post_init__(self):
-        try:
-            keys = self.read_api_keys(self.config_path)
-            self.lastfmapi = keys['lastfmapi']
-        except:
-            raise RuntimeError(f"scrobble.toml not found in {self.config_path}")
+        keys = self.read_api_keys(self.config_path)
+        self.lastfmapi = keys['lastfmapi']
 
         if 'pushoverapi' in keys:
             self.pushoverapi = keys['pushoverapi']
@@ -26,7 +23,7 @@ class Config:
             self.pushoverapi = None
 
     def has_lastfm_api(self):
-        if self.lastfmapi and self.lastfmapi['api_key'] and self.lastfmapi['api_secret']:
+        if self.lastfmapi and 'api_key' in self.lastfmapi and 'api_secret' in self.lastfmapi:
             return True
         else:
             return False
@@ -58,6 +55,8 @@ class Config:
         return self.pushoverapi['user_key']
 
     def read_api_keys(self, config_path: str) -> dict:
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f'.toml config file not found in {config_path}')
         with open(config_path, 'rb') as config_file:
             keys = tomllib.load(config_file)
 

@@ -8,9 +8,12 @@ from scrobble.musicbrainz import CD, UserAgent, init_musicbrainz
 from scrobble.pushover import send_notification
 from scrobble.utils import prepare_tracks
 
-USERAGENT = UserAgent('CD Scrobbler',
-                      '0.0.1',
-                      'https://github.com/sheriferson'
+import importlib.metadata
+
+
+USERAGENT = UserAgent('scrobble (PyPI)',
+                      importlib.metadata.version('scrobble'),
+                      'https://github.com/sheriferson/scrobble'
                       )
 
 

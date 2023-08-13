@@ -1,26 +1,26 @@
 import os
-
 import pylast
-
 from scrobble.utils import Config
 
-CONFIG = Config()
+SESSION_KEY_FILE = os.path.join(os.path.expanduser('~'), '.config', '.lastfm_session_key')
 
 
-def get_lastfm_client(refresh_session_token: bool = False) -> pylast.LastFMNetwork:
-    SESSION_KEY_FILE = os.path.join(os.path.expanduser('~'), '.config', '.lastfm_session_key')
-    if CONFIG.has_lastfm_api:
-        network = pylast.LastFMNetwork(CONFIG.lastfm_api_key, CONFIG.lastfm_api_secret)
+def get_lastfm_client(
+        refresh_session_token: bool = False,
+        session_key_file: str = SESSION_KEY_FILE
+    ) -> pylast.LastFMNetwork:
+    config = Config(config_path=session_key_file)
+    if config.has_lastfm_api():
+        network = pylast.LastFMNetwork(config.lastfm_api_key, config.lastfm_api_secret)
     else:
-        raise RuntimeError("Couldn't find Last.fm API key and secret to set up a client."
-                           "Check README for instructions.")
-
+        raise RuntimeError(f'Last.fm api config in {session_key_file} is missing. Check README.md for instructrions.')
+ 
     # see https://github.com/pylast/pylast
     if refresh_session_token or not os.path.exists(SESSION_KEY_FILE):
         key_generator = pylast.SessionKeyGenerator(network)
         url = key_generator.get_web_auth_url()
 
-        print(f"Please authorize CD Scrobbler to access your account:\n {url}\n")
+        print(f"Please authorize scrobble (PyPI) to access your account:\n {url}\n")
         import time
         import webbrowser
 
