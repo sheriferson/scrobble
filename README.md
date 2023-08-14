@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/sheriferson/scrobble/branch/test-workflow/graph/badge.svg?token=F5H7FXXB58)](https://codecov.io/gh/sheriferson/scrobble)
+
 # Scrobble
 
 A little very unofficial Python CLI tool to scrobble music to Last.fm.
