@@ -1,0 +1,9 @@
+[lastfmapi]
+api_key = 'fakelastfmapikey'
+api_secret = 'fakelastfmapisecret'
+username = 'thespeckofme'
+
+[pushoverapi]
+token = 'fakepushovertoken'
+user_key = 'fakepushoveruserkey'
+
