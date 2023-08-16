@@ -3,18 +3,21 @@ import pylast
 from scrobble.utils import Config
 
 SESSION_KEY_FILE = os.path.join(os.path.expanduser('~'), '.config', '.lastfm_session_key')
+DEFAULT_CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.config', 'scrobble.toml')
 
 
 def get_lastfm_client(
         refresh_session_token: bool = False,
-        session_key_file: str = SESSION_KEY_FILE
-    ) -> pylast.LastFMNetwork:
-    config = Config(config_path=session_key_file)
+        scrobble_config_file: str = DEFAULT_CONFIG_PATH,
+        session_key_file: str = SESSION_KEY_FILE,
+        ) -> pylast.LastFMNetwork:
+
+    config = Config(config_path=scrobble_config_file)
     if config.has_lastfm_api():
         network = pylast.LastFMNetwork(config.lastfm_api_key, config.lastfm_api_secret)
     else:
         raise RuntimeError(f'Last.fm api config in {session_key_file} is missing. Check README.md for instructrions.')
- 
+
     # see https://github.com/pylast/pylast
     if refresh_session_token or not os.path.exists(SESSION_KEY_FILE):
         key_generator = pylast.SessionKeyGenerator(network)
