@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/sheriferson/scrobble/branch/test-workflow/graph/badge.svg?token=F5H7FXXB58)](https://codecov.io/gh/sheriferson/scrobble)
+[![codecov](https://codecov.io/gh/sheriferson/scrobble/branch/main/graph/badge.svg?token=F5H7FXXB58)](https://codecov.io/gh/sheriferson/scrobble)
 
 # Scrobble
 
