@@ -6,7 +6,7 @@ from typing_extensions import Annotated
 from scrobble.lastfm import get_lastfm_client
 from scrobble.musicbrainz import CD, UserAgent, init_musicbrainz
 from scrobble.pushover import send_notification
-from scrobble.utils import prepare_tracks
+from scrobble.utils import prepare_tracks, choose_tracks
 
 import importlib.metadata
 
@@ -19,6 +19,13 @@ USERAGENT = UserAgent('scrobble (PyPI)',
 
 APP = typer.Typer()
 
+@APP.command()
+def musicbrainz():
+    raise NotImplementedError('Scrobbling a MusicBrainz release is not implemented yet.')
+
+@APP.command()
+def discogs():
+    raise NotImplementedError('Scrobbling a Discogs release is not implemented yet.')
 
 @APP.command()
 def cd(
@@ -38,20 +45,30 @@ def cd(
         notify: Annotated[bool, typer.Option(
             help='--notify will send a push notification via Pushover with CD information.'
         )] = False,
-        choice: Annotated[bool, typer.Option(
-            help='--choice will give you a list of options of more than one CD is matched. '
+        release_choice: Annotated[bool, typer.Option(
+            help='--release-choice will give you a list of options of more than one CD is matched. '
                  'Otherwise, the app will go with the first match.'
         )] = True,
+        track_choice: Annotated[bool, typer.Option(
+            help='--track-choice will give you a list of tracks in the release to choose to scrobble '
+                 'instead of scrobbling the entire release.'
+        )] = False,
         ):
 
     init_musicbrainz(USERAGENT)
 
-    cd = CD.find_cd(barcode, choice)
+    cd = CD.find_cd(barcode, release_choice)
 
-    prepped_tracks = prepare_tracks(cd, playbackend)
+    if track_choice:
+        tracks_to_scrobble = choose_tracks(cd.tracks)
+    else:
+        tracks_to_scrobble = cd.tracks
+
+    prepped_tracks = prepare_tracks(cd, tracks_to_scrobble, playbackend)
+
     if verbose:
         print(cd)
-        for track in cd.tracks:
+        for track in tracks_to_scrobble:
             print(track)
 
     if not dryrun:

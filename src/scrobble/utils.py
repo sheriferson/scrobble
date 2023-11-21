@@ -2,9 +2,11 @@ import os
 import tomllib
 from dataclasses import dataclass
 from datetime import datetime
+import subprocess
 from typing import Optional
 
 from scrobble.musicbrainz import CD
+from scrobble.musicbrainz import Track
 
 
 @dataclass
@@ -63,9 +65,9 @@ class Config:
         return keys
 
 
-def prepare_tracks(cd: CD, playbackend: str = 'now') -> list[dict]:
+def prepare_tracks(cd: CD, tracks: list[Track], playbackend: str = 'now') -> list[dict]:
     total_run_time: int = 0
-    for track in cd.tracks:
+    for track in tracks:
         total_run_time += track.track_length
 
     if playbackend != 'now':
@@ -84,7 +86,7 @@ def prepare_tracks(cd: CD, playbackend: str = 'now') -> list[dict]:
     elapsed: int = 0
 
     prepped_tracks = []
-    for track in cd.tracks:
+    for track in tracks:
         elapsed += track.track_length
         prepped_tracks.append(
             {
@@ -96,3 +98,30 @@ def prepare_tracks(cd: CD, playbackend: str = 'now') -> list[dict]:
         )
 
     return prepped_tracks
+
+def find_command(command: str):
+    try:
+        command_check = subprocess.check_output(
+            f'which {command}',
+            shell=True,
+            encoding='UTF-8'
+            ).rstrip()
+    except subprocess.CalledProcessError:
+        command_check = None
+
+    return command_check
+
+
+def choose_tracks(tracks: list[Track]) -> list[Track]:
+    gum_path = find_command('gum')
+    if gum_path:
+        track_dict: dict = {str(track): track for track in tracks}
+        choices = ' '.join(['"'+track_str+'"' for track_str in track_dict.keys()])
+        picked_tracks = subprocess.check_output(
+                f"{gum_path} choose {choices} --no-limit",
+                shell=True,
+                encoding='UTF-8').rstrip()
+    else:
+        raise NotImplementedError("Haven't implemented basic choosing yet")
+
+    return [track for track in tracks if str(track) in picked_tracks]
