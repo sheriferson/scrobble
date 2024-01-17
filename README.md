@@ -26,6 +26,9 @@ Inspired by [CodeScrobble][] and [Open Scrobbler][].
 - A `--dryrun` option if you just want to see a tracklist without sending anything to your last.fm account.
 - A `--notify` option if you want to get a Pushover.net notification. Requires a Pushover app API token and a user key.
 - If the barcode matches more than one release, the tool will ask you to choose. This matters because sometimes the tracklist is different (how releases that different end up with the same barcode is... pfff I don't know). If you want to yolo it, you can pass `--no-choice` and have the tool pick the first match.
+- A `--track-choice` option that lets you choose a subset of tracks to scrobble. Requires [charmbracelet/gum][gum] for now.
+
+[gum]: https://github.com/charmbracelet/gum "'gum' cli tool by charmbracelet. A tool for glamorous shell scripts."
 
 ## Installation
 
@@ -39,6 +42,12 @@ or
 git clone https://github.com/sheriferson/scrobble
 cd scrobble
 pip3 install .
+```
+
+If you want to use the `--track-choice` option, you'll also need `gum`. See [here][gum] for details and Installation instructions. If you have Homebrew it's a simple:
+
+```commandline
+brew install gum
 ```
 
 ## Configuration
@@ -77,33 +86,59 @@ scrobble --help
 ```
 
 ```sh
- Usage: scrobble [OPTIONS] BARCODE [PLAYBACKEND]
+  Usage: scrobble [OPTIONS] COMMAND [ARGS]...
 
-╭─ Arguments ──────────────────────────────────────────────────────────────────────────────╮
-│ *    barcode          TEXT           Barcode of the CD you want to scrobble. Double      │
-│                                      album releases are supported.                       │
-│                                      [default: None]                                     │
-│                                      [required]                                          │
-│      playbackend      [PLAYBACKEND]  When did you finish listening? e.g., 'now' or '1    │
-│                                      hour ago'.                                          │
-│                                      [default: now]                                      │
-╰──────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────────────────╮
-│ --dryrun                --no-dryrun       --dryrun will print a list of tracks without   │
-│                                           scrobbling to last.fm                          │
-│                                           [default: no-dryrun]                           │
-│ --verbose               --no-verbose      --verbose will print a bunch of stuff to your  │
-│                                           terminal.                                      │
-│                                           [default: no-verbose]                          │
-│ --notify                --no-notify       --notify will send a push notification via     │
-│                                           Pushover with CD information.                  │
-│                                           [default: no-notify]                           │
-│ --install-completion                      Install completion for the current shell.      │
-│ --show-completion                         Show completion for the current shell, to copy │
-│                                           it or customize the installation.              │
-│ --help                                    Show this message and exit.                    │
-╰──────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.              │
+│ --show-completion             Show completion for the current shell, to copy it or   │
+│                               customize the installation.                            │
+│ --help                        Show this message and exit.                            │
+╰──────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────╮
+│ cd                                                                                   │
+│ discogs                                                                              │
+│ musicbrainz                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────╯
+```
 
+```sh
+scrobble cd --help
+```
+
+```sh
+ Usage: scrobble cd [OPTIONS] BARCODE [PLAYBACKEND]
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────╮
+│ *    barcode          TEXT           Barcode of the CD you want to scrobble. Double  │
+│                                      album releases are supported.                   │
+│                                      [default: None]                                 │
+│                                      [required]                                      │
+│      playbackend      [PLAYBACKEND]  When did you finish listening? e.g., 'now' or   │
+│                                      '1 hour ago'.                                   │
+│                                      [default: now]                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────╮
+│ --dryrun            --no-dryrun              --dryrun will print a list of tracks    │
+│                                              without scrobbling to Last.fm           │
+│                                              [default: no-dryrun]                    │
+│ --verbose           --no-verbose             --verbose will print a bunch of stuff   │
+│                                              to your terminal.                       │
+│                                              [default: no-verbose]                   │
+│ --notify            --no-notify              --notify will send a push notification  │
+│                                              via Pushover with CD information.       │
+│                                              [default: no-notify]                    │
+│ --release-choice    --no-release-choice      --release-choice will give you a list   │
+│                                              of options of more than one CD is       │
+│                                              matched. Otherwise, the app will go     │
+│                                              with the first match.                   │
+│                                              [default: release-choice]               │
+│ --track-choice      --no-track-choice        --track-choice will give you a list of  │
+│                                              tracks in the release to choose to      │
+│                                              scrobble instead of scrobbling the      │
+│                                              entire release.                         │
+│                                              [default: no-track-choice]              │
+│ --help                                       Show this message and exit.             │
+╰──────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## Examples
@@ -111,7 +146,7 @@ scrobble --help
 ```sh
 # list album info and tracks from Rammstein's Herzeleid without actually scrobbling
 
-$ scrobble --dryrun --verbose 031452916021
+$ scrobble cd --dryrun --verbose 031452916021
 
 💿 Rammstein - Herzeleid (1996)
 🎵 1 Wollt ihr das Bett in Flammen sehen?
@@ -131,12 +166,12 @@ $ scrobble --dryrun --verbose 031452916021
 # scrobble Nymphetamine by Cradle of Filth which you finished
 # listening to two hours ago
 
-$ scrobble 016861828257 '2 hours ago'
+$ scrobble cd 016861828257 '2 hours ago'
 
 # scrobble Comalies by Lacuna Coil
 # the barcode matches multiple releases, so you're offered options
 
-$ scrobble 727701816029
+$ scrobble cd 727701816029
 
 More than one release matches barcode 727701816029.
 
@@ -154,7 +189,7 @@ Which release do you want to scrobble? [1/2/3] (1):
 # just pick the first one and send a notification using
 # pushover.net (requires extra configuration)
 
-$ scrobble --no-choice --notify 018777371520
+$ scrobble cd --no-choice --notify 018777371520
 ```
 
 

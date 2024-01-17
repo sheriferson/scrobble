@@ -99,13 +99,14 @@ def prepare_tracks(cd: CD, tracks: list[Track], playbackend: str = 'now') -> lis
 
     return prepped_tracks
 
+
 def find_command(command: str):
     try:
         command_check = subprocess.check_output(
             f'which {command}',
             shell=True,
             encoding='UTF-8'
-            ).rstrip()
+        ).rstrip()
     except subprocess.CalledProcessError:
         command_check = None
 
@@ -116,12 +117,13 @@ def choose_tracks(tracks: list[Track]) -> list[Track]:
     gum_path = find_command('gum')
     if gum_path:
         track_dict: dict = {str(track): track for track in tracks}
-        choices = ' '.join(['"'+track_str+'"' for track_str in track_dict.keys()])
+        choices = ' '.join(['"' + track_str + '"' for track_str in track_dict.keys()])
+        pre_selections = ','.join(['"' + track_str + '"' for track_str in track_dict.keys()])
         picked_tracks = subprocess.check_output(
-                f"{gum_path} choose {choices} --no-limit",
-                shell=True,
-                encoding='UTF-8').rstrip()
+            f"{gum_path} choose {choices} --no-limit --selected={pre_selections}",
+            shell=True,
+            encoding='UTF-8').rstrip()
     else:
-        raise NotImplementedError("Haven't implemented basic choosing yet")
+        raise NotImplementedError("Track choosing without charmbracelet/gum installation is not implemented yet.")
 
     return [track for track in tracks if str(track) in picked_tracks]
