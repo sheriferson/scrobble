@@ -19,13 +19,16 @@ USERAGENT = UserAgent('scrobble (PyPI)',
 
 APP = typer.Typer()
 
+
 @APP.command()
 def musicbrainz():
     raise NotImplementedError('Scrobbling a MusicBrainz release is not implemented yet.')
 
+
 @APP.command()
 def discogs():
     raise NotImplementedError('Scrobbling a Discogs release is not implemented yet.')
+
 
 @APP.command()
 def cd(
@@ -57,7 +60,7 @@ def cd(
 
     init_musicbrainz(USERAGENT)
 
-    cd = CD.find_cd(barcode, release_choice)
+    cd: CD = CD.find_cd(barcode, release_choice)
 
     if track_choice:
         tracks_to_scrobble = choose_tracks(cd.tracks)

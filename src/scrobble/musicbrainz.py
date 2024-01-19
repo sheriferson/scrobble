@@ -73,7 +73,8 @@ class CD:
                 index = 0
                 for cd in cds:
                     index += 1
-                    entry: str = f"{index}. {cd.title}, {cd.discs} {'disc' if cd.discs < 2 else ' discs'}, {len(cd.tracks)} tracks"
+                    entry: str = (f"{index}. {cd.title}, {cd.discs} {'disc' if cd.discs < 2 else ' discs'}, "
+                                  f"{len(cd.tracks)} tracks")
                     if cd.year:
                         entry += f", released in {cd.year}."
                     else:
@@ -88,11 +89,11 @@ class CD:
 
     @classmethod
     def _parse_musicbrainz_result(cls, result: dict):
-        id = result['id']
-        title = result['title']
-        artist = result['artist-credit'][0]['name']
-        year = str(parser.parse(result['date']).year) if result['date'] else None
-        disc_count = len(result['medium-list'])
+        id: str = result['id']
+        title: str = result['title']
+        artist: str = result['artist-credit'][0]['name']
+        year: str = str(parser.parse(result.get('date')).year) if 'date' in result else None
+        disc_count: int = len(result['medium-list'])
 
         return CD(id, title, artist, year, disc_count)
 

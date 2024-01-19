@@ -64,20 +64,19 @@ class Config:
 
         return keys
 
-
-def prepare_tracks(cd: CD, tracks: list[Track], playbackend: str = 'now') -> list[dict]:
+def prepare_tracks(cd: CD, tracks: list[Track], playback_end: str = 'now') -> list[dict]:
     total_run_time: int = 0
     for track in tracks:
         total_run_time += track.track_length
 
-    if playbackend != 'now':
+    if playback_end != 'now':
         import parsedatetime
         cal = parsedatetime.Calendar()
         try:
-            parsed_end, _ = cal.parse(playbackend)
+            parsed_end, _ = cal.parse(playback_end)
             stop_time = datetime(*parsed_end[:6]).timestamp()
         except:
-            raise ValueError(f"'{playbackend}' could not be parsed. Try a different input.")
+            raise ValueError(f"'{playback_end}' could not be parsed. Try a different input.")
 
     else:
         stop_time = datetime.now().timestamp()
@@ -93,7 +92,7 @@ def prepare_tracks(cd: CD, tracks: list[Track], playbackend: str = 'now') -> lis
                 'artist': cd.artist,
                 'title': track.track_title,
                 'album': cd.title,
-                'timestamp': start_time+elapsed
+                'timestamp': start_time + elapsed
             }
         )
 
@@ -130,4 +129,3 @@ def choose_tracks(tracks: list[Track]) -> list[Track]:
     else:
         raise NotImplementedError("Track choosing without charmbracelet/gum installation is not implemented yet.")
 
-    return [track for track in tracks if str(track) in picked_tracks]
