@@ -121,8 +121,12 @@ def choose_tracks(tracks: list[Track]) -> list[Track]:
         pre_selections = ','.join(['"' + track_str + '"' for track_str in track_dict.keys()])
         picked_tracks = subprocess.check_output(
             f"{gum_path} choose {choices} --no-limit --selected={pre_selections}",
+            env={'GUM_CHOOSE_HEIGHT': str(len(tracks))},
             shell=True,
             encoding='UTF-8').rstrip()
+
+        return [track for track in tracks if str(track) in picked_tracks]
+
     else:
         raise NotImplementedError("Track choosing without charmbracelet/gum installation is not implemented yet.")
 
