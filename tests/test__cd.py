@@ -8,7 +8,7 @@ USERAGENT = UserAgent('scrobble (PyPI) (tests)',
                       )
 
 init_musicbrainz(USERAGENT)
-test_cd = CD.find_cd(727701816029, choice=False)
+test_cd = CD.find_cd(7277017746006, choice=False)
 
 
 def test_cd_artist():
@@ -18,4 +18,4 @@ def test_cd_album():
     assert test_cd.title == 'Comalies'
 
 def test_cd_track_length():
-    assert len(test_cd) == 13
+    assert len(test_cd) == 14
