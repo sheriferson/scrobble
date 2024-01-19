@@ -28,6 +28,10 @@ def test_valid_config_lastfm_username():
     test_config = Config(config_path='tests/resources/scrobble_complete_valid.toml')
     assert test_config.lastfm_username == 'thespeckofme'
 
+def test_valid_config_pushover_token():
+    test_config = Config(config_path='tests/resources/scrobble_complete_valid.toml')
+    assert test_config.pushover_token == 'fakepushovertoken'
+
 def test_find_command_succeeding():
     command_check = find_command('ls')
     assert command_check is not None
