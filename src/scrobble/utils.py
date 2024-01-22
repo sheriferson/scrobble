@@ -9,6 +9,15 @@ from scrobble.musicbrainz import CD
 from scrobble.musicbrainz import Track
 
 
+def read_api_keys(config_path: str) -> dict:
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f'.toml config file not found in {config_path}')
+    with open(config_path, 'rb') as config_file:
+        keys = tomllib.load(config_file)
+
+    return keys
+
+
 @dataclass
 class Config:
     config_path: str = os.path.join(os.path.expanduser('~'), '.config', 'scrobble.toml')
@@ -16,7 +25,7 @@ class Config:
     pushoverapi: Optional[dict[str, str]] = None
 
     def __post_init__(self):
-        keys = self.read_api_keys(self.config_path)
+        keys = read_api_keys(self.config_path)
         self.lastfmapi = keys['lastfmapi']
 
         if 'pushoverapi' in keys:
