@@ -4,10 +4,10 @@ import urllib
 from scrobble.musicbrainz import CD
 from scrobble.utils import Config
 
-config = Config()
 
-
-def send_notification(cd: CD):
+def send_notification(cd: CD, config=None):
+    if not config:
+        config = Config()
     conn = http.client.HTTPSConnection("api.pushover.net:443")
     query_strings = {
             "token": config.pushover_token,

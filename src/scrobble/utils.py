@@ -49,6 +49,13 @@ class Config:
     def lastfm_username(self):
         return self.lastfmapi['username']
 
+    @lastfm_username.setter
+    def lastfm_username(self, new_lastfm_username):
+        if new_lastfm_username:
+            self.lastfmapi['username'] = new_lastfm_username
+        else:
+            raise ValueError('You cannot set the Last.fm username to an empty value.')
+
     @property
     def lastfm_api_key(self):
         return self.lastfmapi['api_key']
@@ -61,17 +68,24 @@ class Config:
     def pushover_token(self):
         return self.pushoverapi['token']
 
+    @pushover_token.setter
+    def pushover_token(self, new_token_value: str):
+        if new_token_value:
+            self.pushoverapi['token'] = new_token_value
+        else:
+            raise ValueError('You cannot set the Pushover token to an empty value.')
+
     @property
     def pushover_user(self):
         return self.pushoverapi['user_key']
 
-    def read_api_keys(self, config_path: str) -> dict:
-        if not os.path.exists(config_path):
-            raise FileNotFoundError(f'.toml config file not found in {config_path}')
-        with open(config_path, 'rb') as config_file:
-            keys = tomllib.load(config_file)
+    @pushover_user.setter
+    def pushover_user(self, new_pushover_user: str):
+        if new_pushover_user:
+            self.pushoverapi['user_key'] = new_pushover_user
+        else:
+            raise ValueError('You cannot set the Pushover user key to an empty value.')
 
-        return keys
 
 def prepare_tracks(cd: CD, tracks: list[Track], playback_end: str = 'now') -> list[dict]:
     total_run_time: int = 0
@@ -137,4 +151,3 @@ def choose_tracks(tracks: list[Track]) -> list[Track]:
 
     else:
         raise NotImplementedError("Track choosing without charmbracelet/gum installation is not implemented yet.")
-
