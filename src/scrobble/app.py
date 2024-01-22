@@ -19,20 +19,23 @@ USERAGENT = UserAgent('scrobble (PyPI)',
 
 APP = typer.Typer()
 
+
 @APP.command()
 def musicbrainz():
     raise NotImplementedError('Scrobbling a MusicBrainz release is not implemented yet.')
 
+
 @APP.command()
 def discogs():
     raise NotImplementedError('Scrobbling a Discogs release is not implemented yet.')
+
 
 @APP.command()
 def cd(
         barcode: Annotated[str, typer.Argument(
             help='Barcode of the CD you want to scrobble. Double album releases are supported.'
         )],
-        playbackend: Annotated[Optional[str], typer.Argument(
+        playback_end: Annotated[Optional[str], typer.Argument(
             help="When did you finish listening? e.g., 'now' or '1 hour ago'."
         )] = 'now',
 
@@ -57,28 +60,28 @@ def cd(
 
     init_musicbrainz(USERAGENT)
 
-    cd = CD.find_cd(barcode, release_choice)
+    scrobble_cd: CD = CD.find_cd(barcode, release_choice)
 
     if track_choice:
-        tracks_to_scrobble = choose_tracks(cd.tracks)
+        tracks_to_scrobble = choose_tracks(scrobble_cd.tracks)
     else:
-        tracks_to_scrobble = cd.tracks
+        tracks_to_scrobble = scrobble_cd.tracks
 
-    prepped_tracks = prepare_tracks(cd, tracks_to_scrobble, playbackend)
+    prepped_tracks = prepare_tracks(scrobble_cd, tracks_to_scrobble, playback_end)
 
     if verbose:
-        print(cd)
+        print(scrobble_cd)
         for track in tracks_to_scrobble:
             print(track)
 
     if not dryrun:
-        LASTFM = get_lastfm_client()
-        LASTFM.scrobble_many(prepped_tracks)
+        lastfm_client = get_lastfm_client()
+        lastfm_client.scrobble_many(prepped_tracks)
     else:
         print('⚠️  Dry run - no tracks were scrobbled.')
 
     if notify:
-        send_notification(cd)
+        send_notification(scrobble_cd)
 
 
 def main():

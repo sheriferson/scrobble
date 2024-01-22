@@ -1,3 +1,5 @@
+import pytest
+
 from scrobble.musicbrainz import CD, UserAgent, init_musicbrainz
 
 import importlib.metadata
@@ -8,14 +10,25 @@ USERAGENT = UserAgent('scrobble (PyPI) (tests)',
                       )
 
 init_musicbrainz(USERAGENT)
-test_cd = CD.find_cd(7277017746006, choice=False)
+TEST_CD = CD.find_cd(7277017746006, choice=False)
 
 
 def test_cd_artist():
-    assert test_cd.artist == 'Lacuna Coil'
+    assert TEST_CD.artist == 'Lacuna Coil'
+
 
 def test_cd_album():
-    assert test_cd.title == 'Comalies'
+    assert TEST_CD.title == 'Comalies'
+
 
 def test_cd_track_length():
-    assert len(test_cd) == 14
+    assert len(TEST_CD) == 14
+
+
+def test_cd_string_representation():
+    assert str(TEST_CD) == "💿 Lacuna Coil - Comalies (2002)"
+
+
+def test_failed_CD_retrieval():
+    with pytest.raises(RuntimeError):
+        CD.find_cd(12345)
