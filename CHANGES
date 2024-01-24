@@ -1,5 +1,7 @@
 0.2.0 (TBD)
     * `--track-choice` option to select a subset of tracks to scrobble.
+    * `scrobble cd` now accepts a path to an image with a barcode. Providing the barcode number itself as input
+      is still valid.
 0.1.0 (2023-08-02):
     * Initial release on GitHub and PyPI.
     * `scrobble` is intended to be a general/omni-scrobbling tool that works with different tracklists.

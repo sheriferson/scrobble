@@ -108,37 +108,38 @@ scrobble cd --help
 ```sh
  Usage: scrobble cd [OPTIONS] BARCODE [PLAYBACKEND]
 
-╭─ Arguments ──────────────────────────────────────────────────────────────────────────╮
-│ *    barcode          TEXT           Barcode of the CD you want to scrobble. Double  │
-│                                      album releases are supported.                   │
-│                                      [default: None]                                 │
-│                                      [required]                                      │
-│      playbackend      [PLAYBACKEND]  When did you finish listening? e.g., 'now' or   │
-│                                      '1 hour ago'.                                   │
-│                                      [default: now]                                  │
-╰──────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────────────╮
-│ --dryrun            --no-dryrun              --dryrun will print a list of tracks    │
-│                                              without scrobbling to Last.fm           │
-│                                              [default: no-dryrun]                    │
-│ --verbose           --no-verbose             --verbose will print a bunch of stuff   │
-│                                              to your terminal.                       │
-│                                              [default: no-verbose]                   │
-│ --notify            --no-notify              --notify will send a push notification  │
-│                                              via Pushover with CD information.       │
-│                                              [default: no-notify]                    │
-│ --release-choice    --no-release-choice      --release-choice will give you a list   │
-│                                              of options of more than one CD is       │
-│                                              matched. Otherwise, the app will go     │
-│                                              with the first match.                   │
-│                                              [default: release-choice]               │
-│ --track-choice      --no-track-choice        --track-choice will give you a list of  │
-│                                              tracks in the release to choose to      │
-│                                              scrobble instead of scrobbling the      │
-│                                              entire release.                         │
-│                                              [default: no-track-choice]              │
-│ --help                                       Show this message and exit.             │
-╰──────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Arguments ───────────────────────────────────────────────────────────────────────────╮
+│ *    barcode           TEXT            Barcode (as a number) of the CD you want to    │
+│                                        scrobble, or a path to an image of a barcode.  │
+│                                        Double album releases are supported.           │
+│                                        [default: None]                                │
+│                                        [required]                                     │
+│      playback_end      [PLAYBACK_END]  When did you finish listening? e.g., 'now' or  │
+│                                        '1 hour ago'.                                  │
+│                                        [default: now]                                 │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ─────────────────────────────────────────────────────────────────────────────╮
+│ --dryrun            --no-dryrun              --dryrun will print a list of tracks     │
+│                                              without scrobbling to Last.fm            │
+│                                              [default: no-dryrun]                     │
+│ --verbose           --no-verbose             --verbose will print a bunch of stuff to │
+│                                              your terminal.                           │
+│                                              [default: no-verbose]                    │
+│ --notify            --no-notify              --notify will send a push notification   │
+│                                              via Pushover with CD information.        │
+│                                              [default: no-notify]                     │
+│ --release-choice    --no-release-choice      --release-choice will give you a list of │
+│                                              options of more than one CD is matched.  │
+│                                              Otherwise, the app will go with the      │
+│                                              first match.                             │
+│                                              [default: release-choice]                │
+│ --track-choice      --no-track-choice        --track-choice will give you a list of   │
+│                                              tracks in the release to choose to       │
+│                                              scrobble instead of scrobbling the       │
+│                                              entire release.                          │
+│                                              [default: no-track-choice]               │
+│ --help                                       Show this message and exit.              │
+╰───────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## Examples
@@ -162,6 +163,27 @@ $ scrobble cd --dryrun --verbose 031452916021
 🎵 11 Rammstein
 ⚠️  Dry run - no tracks were scrobbled.
 
+# provide a path to a an image with a barcode instead of the barcode value itself
+scrobble cd --dryrun --verbose --no-release-choice 'tests/resources/CD1-600.jpeg'
+
+💿 MF DOOM - MM..FOOD (2017)
+🎵 1 Beef Rapp
+🎵 2 Hoe Cakes
+🎵 3 Potholderz
+🎵 4 One Beer
+🎵 5 Deep Fried Frenz
+🎵 6 Poo‐Putt Platter
+🎵 7 Fillet‐O‐Rapper
+🎵 8 Gumbo
+🎵 9 Fig Leaf Bi‐Carbonate
+🎵 10 Kon Karne
+🎵 11 Guinesses
+🎵 12 Kon Queso
+🎵 13 Rapp Snitch Knishes
+🎵 14 Vomitspit
+🎵 15 Kookies
+🎵 1 MM..FOOD Drive Tour
+⚠️  Dry run - no tracks were scrobbled.
 
 # scrobble Nymphetamine by Cradle of Filth which you finished
 # listening to two hours ago

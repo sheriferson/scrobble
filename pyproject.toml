@@ -15,19 +15,23 @@ classifiers = [
     "Topic :: Utilities",
     "Programming Language :: Python :: 3",
 ]
+
 dependencies = [
     "musicbrainzngs",
     "parsedatetime",
-    "pylast",
     "python-dateutil",
+    "pylast",
     "rich",
     "typer[all]",
+    "opencv-python"
 ]
 
 [project.optional-dependencies]
+
 test = [
+    "scrobble",
     "pytest",
-    "pytest-cov"
+    "pytest-cov",
 ]
 
 [project.urls]
