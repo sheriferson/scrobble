@@ -1,6 +1,8 @@
 from typing import Optional
 
+import os
 import typer
+from pathlib import Path
 from typing_extensions import Annotated
 
 from scrobble.lastfm import get_lastfm_client
@@ -33,7 +35,7 @@ def discogs():
 @APP.command()
 def cd(
         barcode: Annotated[str, typer.Argument(
-            help='Barcode of the CD you want to scrobble. Double album releases are supported.'
+            help='Barcode (as a number) of the CD you want to scrobble, or a path to an image of a barcode. Double album releases are supported.'
         )],
         playback_end: Annotated[Optional[str], typer.Argument(
             help="When did you finish listening? e.g., 'now' or '1 hour ago'."
@@ -60,7 +62,18 @@ def cd(
 
     init_musicbrainz(USERAGENT)
 
-    scrobble_cd: CD = CD.find_cd(barcode, release_choice)
+    try:
+        resolved_barcode = int(barcode)
+    except ValueError:
+        if os.path.exists(Path(barcode).resolve()):
+            from scrobble.barcode_scanner import read_barcode
+            resolved_barcode = read_barcode(barcode)
+            if not resolved_barcode:
+                raise RuntimeError(f'The image you provided at path {barcode} did not contain a readable barcode.')
+    else:
+        raise ValueError(f"The barcode you entered: {barcode} is not not a number or a valid path to a barcode image.")
+
+    scrobble_cd: CD = CD.find_cd(resolved_barcode, release_choice)
 
     if track_choice:
         tracks_to_scrobble = choose_tracks(scrobble_cd.tracks)
