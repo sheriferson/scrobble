@@ -1,4 +1,4 @@
-0.2.0 (2024-01-28)
+0.2.1 (2024-01-28)
     * `--track-choice` option to select a subset of tracks to scrobble.
     * `scrobble cd` now accepts a path to an image with a barcode. Providing the barcode number itself as input
       is still valid.
