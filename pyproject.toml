@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scrobble"
-version = "0.1.0"
+version = "0.2.0"
 description = "Scrobble CDs to your last.fm account."
 readme = "README.md"
 authors = [{ name = "Sherif Soliman", email = "hi@sherif.io" }]
