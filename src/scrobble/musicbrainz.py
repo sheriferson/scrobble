@@ -92,7 +92,7 @@ class CD:
         id: str = result['id']
         title: str = result['title']
         artist: str = result['artist-credit'][0]['name']
-        year: str = str(parser.parse(result.get('date')).year) if 'date' in result else None
+        year: str = str(parser.parse(result.get('date')).year) if 'date' in result and result['date'] else None
         disc_count: int = len(result['medium-list'])
 
         return CD(id, title, artist, year, disc_count)
