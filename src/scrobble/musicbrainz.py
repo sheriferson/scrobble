@@ -32,7 +32,10 @@ class Track:
         """
         track_position: int = int(result['position'])
         title: str = result['recording']['title']
-        length: int = int(result['length']) / 1000
+        if 'length' in result:
+            length: int = int(result['length']) / 1000
+        elif 'track_or_recording_length' in result:
+            length: int = int(result['track_or_recording_length']) / 1000
 
         return Track(title, disc_no, track_position, length)
 

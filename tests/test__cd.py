@@ -25,6 +25,12 @@ def test_cd_track_length():
     assert len(TEST_CD) == 14
 
 
+def test_cd_track_length_alt_attribute_name():
+    alt_test_cd: CD = CD.find_cd(4988005346872, choice=False)
+    assert len(alt_test_cd) == 15
+    assert alt_test_cd.tracks[0].track_length > 0
+
+
 def test_cd_string_representation():
     assert str(TEST_CD) == "💿 Lacuna Coil - Comalies (2002)"
 
