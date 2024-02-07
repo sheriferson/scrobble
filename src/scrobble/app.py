@@ -70,8 +70,8 @@ def cd(
             resolved_barcode = read_barcode(barcode)
             if not resolved_barcode:
                 raise RuntimeError(f'The image you provided at path {barcode} did not contain a readable barcode.')
-    else:
-        raise ValueError(f"The barcode you entered: {barcode} is not not a number or a valid path to a barcode image.")
+        else:
+            raise ValueError(f"The barcode you entered: {barcode} is not a number or a valid path to a barcode image.")
 
     scrobble_cd: CD = CD.find_cd(resolved_barcode, release_choice)
 
