@@ -53,9 +53,8 @@ class TestChooseTracksFunction(unittest.TestCase):
 
         # Assert that the subprocess.check_output was called with the correct arguments
         mock_check_output.assert_called_once_with(
-            f'/path/to/gum choose "{str(TEST_TRACKS[0])}" "{str(TEST_TRACKS[1])}" "{str(TEST_TRACKS[2])}"'
-            f' --no-limit --selected="{str(TEST_TRACKS[0])}","{str(TEST_TRACKS[1])}","{str(TEST_TRACKS[2])}"',
-            env={'GUM_CHOOSE_HEIGHT': '3'},
+            f'/path/to/gum choose --no-limit --selected="{str(TEST_TRACKS[0])}","{str(TEST_TRACKS[1])}","{str(TEST_TRACKS[2])}" "{str(TEST_TRACKS[0])}" "{str(TEST_TRACKS[1])}" "{str(TEST_TRACKS[2])}"',
+            env={'GUM_CHOOSE_HEIGHT': '5'},
             shell=True,
             encoding='UTF-8'
         )
