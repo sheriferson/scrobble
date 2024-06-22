@@ -2,14 +2,14 @@ import unittest
 from unittest.mock import patch
 
 from scrobble.utils import Config, find_command, choose_tracks
-from scrobble.musicbrainz import Track
+from scrobble.musicbrainz import MusicBrainzTrack
 from typing import List
 
 
-TEST_TRACKS: List[Track] = [
-            Track(track_title="track1", disc_no=1, track_position=1, track_length=10),
-            Track(track_title="track1", disc_no=1, track_position=2, track_length=20),
-            Track(track_title="track1", disc_no=1, track_position=3, track_length=30),
+TEST_TRACKS: List[MusicBrainzTrack] = [
+            MusicBrainzTrack(track_title="track1", track_artist="The Artist", disc_no=1, track_position=1, track_length=10),
+            MusicBrainzTrack(track_title="track1", track_artist="The Artist", disc_no=1, track_position=2, track_length=20),
+            MusicBrainzTrack(track_title="track1", track_artist="The Artist", disc_no=1, track_position=3, track_length=30),
         ]
 
 def test_valid_config_has_lastfm_api():

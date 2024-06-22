@@ -1,6 +1,6 @@
 import pytest
 
-from scrobble.musicbrainz import CD, UserAgent, init_musicbrainz
+from scrobble.musicbrainz import MusicBrainzCD, UserAgent, init_musicbrainz
 
 import importlib.metadata
 
@@ -10,7 +10,7 @@ USERAGENT = UserAgent('scrobble (PyPI) (tests)',
                       )
 
 init_musicbrainz(USERAGENT)
-TEST_CD = CD.find_cd(7277017746006, choice=False)
+TEST_CD = MusicBrainzCD.find_cd(7277017746006, choice=False)
 
 
 def test_cd_artist():
@@ -26,10 +26,12 @@ def test_cd_track_length():
 
 
 def test_cd_track_length_alt_attribute_name():
-    alt_test_cd: CD = CD.find_cd(4988005346872, choice=False)
+    alt_test_cd: MusicBrainzCD = MusicBrainzCD.find_cd(4988005346872, choice=False)
     assert len(alt_test_cd) == 15
     assert alt_test_cd.tracks[0].track_length > 0
 
+def test_cd_track_artist():
+    assert TEST_CD.tracks[0].artist is not None
 
 def test_cd_string_representation():
     assert str(TEST_CD) == "💿 Lacuna Coil - Comalies (2002)"
@@ -37,4 +39,4 @@ def test_cd_string_representation():
 
 def test_failed_CD_retrieval():
     with pytest.raises(RuntimeError):
-        CD.find_cd(12345)
+        MusicBrainzCD.find_cd(12345)
