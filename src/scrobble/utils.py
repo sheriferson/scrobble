@@ -5,7 +5,7 @@ from datetime import datetime
 import subprocess
 from typing import Optional
 
-from scrobble.musicbrainz import CD
+from scrobble.musicbrainz import MusicBrainzCD
 from scrobble.musicbrainz import Track
 
 
@@ -87,7 +87,7 @@ class Config:
             raise ValueError('You cannot set the Pushover user key to an empty value.')
 
 
-def prepare_tracks(cd: CD, tracks: list[Track], playback_end: str = 'now') -> list[dict]:
+def prepare_tracks(cd: MusicBrainzCD, tracks: list[Track], playback_end: str = 'now') -> list[dict]:
     total_run_time: int = 0
     for track in tracks:
         total_run_time += track.track_length
@@ -112,7 +112,7 @@ def prepare_tracks(cd: CD, tracks: list[Track], playback_end: str = 'now') -> li
         elapsed += track.track_length
         prepped_tracks.append(
             {
-                'artist': cd.artist,
+                'artist': track.artist,
                 'title': track.track_title,
                 'album': cd.title,
                 'timestamp': start_time + elapsed
@@ -142,8 +142,8 @@ def choose_tracks(tracks: list[Track]) -> list[Track]:
         choices = ' '.join(['"' + track_str + '"' for track_str in track_dict.keys()])
         pre_selections = ','.join(['"' + track_str + '"' for track_str in track_dict.keys()])
         picked_tracks = subprocess.check_output(
-            f"{gum_path} choose {choices} --no-limit --selected={pre_selections}",
-            env={'GUM_CHOOSE_HEIGHT': str(len(tracks))},
+            f"{gum_path} choose --no-limit --selected={pre_selections} {choices}",
+            env={'GUM_CHOOSE_HEIGHT': str(len(tracks) + 2)},  # the +2 is weird, without it the list scrolls
             shell=True,
             encoding='UTF-8').rstrip()
 

@@ -6,12 +6,11 @@ from pathlib import Path
 from typing_extensions import Annotated
 
 from scrobble.lastfm import get_lastfm_client
-from scrobble.musicbrainz import CD, UserAgent, init_musicbrainz
+from scrobble.musicbrainz import MusicBrainzCD, UserAgent, init_musicbrainz
 from scrobble.pushover import send_notification
 from scrobble.utils import prepare_tracks, choose_tracks
 
 import importlib.metadata
-
 
 USERAGENT = UserAgent('scrobble (PyPI)',
                       importlib.metadata.version('scrobble'),
@@ -73,12 +72,13 @@ def cd(
         else:
             raise ValueError(f"The barcode you entered: {barcode} is not a number or a valid path to a barcode image.")
 
-    scrobble_cd: CD = CD.find_cd(resolved_barcode, release_choice)
+    scrobble_cd: MusicBrainzCD = MusicBrainzCD.find_cd(resolved_barcode, release_choice)
 
     if track_choice:
         tracks_to_scrobble = choose_tracks(scrobble_cd.tracks)
     else:
         tracks_to_scrobble = scrobble_cd.tracks
+
 
     prepped_tracks = prepare_tracks(scrobble_cd, tracks_to_scrobble, playback_end)
 

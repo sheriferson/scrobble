@@ -1,6 +1,6 @@
 from scrobble.pushover import send_notification
 from scrobble.utils import Config
-from scrobble.musicbrainz import CD, UserAgent, init_musicbrainz
+from scrobble.musicbrainz import MusicBrainzCD, UserAgent, init_musicbrainz
 import importlib.metadata
 from urllib.parse import quote_plus
 
@@ -14,7 +14,7 @@ USERAGENT = UserAgent('scrobble (PyPI) (tests)',
 
 init_musicbrainz(USERAGENT)
 
-TEST_CD = CD.find_cd(7277017746006, choice=False)
+TEST_CD = MusicBrainzCD.find_cd(7277017746006, choice=False)
 
 
 class TestSendNotification(unittest.TestCase):

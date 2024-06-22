@@ -1,11 +1,11 @@
 import http.client
 import urllib
 
-from scrobble.musicbrainz import CD
+from scrobble.musicbrainz import MusicBrainzCD
 from scrobble.utils import Config
 
 
-def send_notification(cd: CD, config=None):
+def send_notification(cd: MusicBrainzCD, config=None):
     if not config:
         config = Config()
     conn = http.client.HTTPSConnection("api.pushover.net:443")

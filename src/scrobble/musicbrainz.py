@@ -1,10 +1,20 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 import musicbrainzngs
 from dateutil import parser
 from rich import print
 from rich.prompt import IntPrompt
+
+from scrobble.models.track import Track
+from scrobble.models.cd import CD
+
+DISC_NO_DECORATION = {
+    '1': '₁',
+    '2': '₂',
+    '3': '₃',
+    '4': '₄'
+}
 
 
 @dataclass
@@ -19,41 +29,56 @@ class UserAgent:
 
 
 @dataclass
-class Track:
-    track_title: str
-    disc_no: Optional[int]
-    track_position: int
-    track_length: int
+class MusicBrainzTrack(Track):
 
+    @property
+    def artist(self):
+        if self.track_artist:
+            return self.track_artist
+        else:
+            return ''
     @classmethod
-    def parse_musicbrainz_result(cls, result: dict, disc_no: Optional[int] = 1):
+    def parse_source_result(cls, result: dict, disc_no: Optional[int] = 1):
         """
         Look deep into the eyes of the json response and extract the track values we care about.
         """
         track_position: int = int(result['position'])
         title: str = result['recording']['title']
+        track_artist: str = result['recording']['artist-credit'][0]['artist']['name']
         if 'length' in result:
-            length: int = int(result['length']) / 1000
+            length: Union[int, float] = int(result['length']) / 1000
         elif 'track_or_recording_length' in result:
-            length: int = int(result['track_or_recording_length']) / 1000
+            length: Union[int, float] = int(result['track_or_recording_length']) / 1000
+        else:
+            raise RuntimeError(f"Couldn't find the length of track {result}")
 
-        return Track(title, disc_no, track_position, length)
+        return MusicBrainzTrack(title, track_artist, disc_no, track_position, length)
 
     def __str__(self):
-        return f"🎵 {self.track_position} {self.track_title}"
+        if self.disc_no:
+            return "💿{:>1} {:>2} {} - {}".format(DISC_NO_DECORATION[str(self.disc_no)], self.track_position, self.artist, self.track_title)
+        else:
+            return "🎵{:>2} {} - {}".format(self.track_position, self.artist, self.track_title)
 
 
 @dataclass
-class CD:
+class MusicBrainzCD(CD):
     id: str
     title: str
     artist: str
     year: Optional[str]
     discs: int
-    tracks: Optional[list[Track]] = None
+    _tracks: Optional[list[MusicBrainzTrack]] = None
 
-    def __post_init__(self):
-        self._get_tracks()
+    @property
+    def tracks(self):
+        if not self._tracks:
+            self._tracks = self._get_tracks()
+        return self._tracks
+
+    @tracks.setter
+    def tracks(self, new_tracks: Optional[list[MusicBrainzTrack]]):
+        self._tracks = new_tracks
 
     @classmethod
     def find_cd(cls, barcode: str, choice: bool = True):
@@ -67,7 +92,7 @@ class CD:
             raise RuntimeError(f"No releases found for {barcode}")
         else:
             releases = results['release-list']
-            cds: list[CD] = [CD._parse_musicbrainz_result(release) for release in releases]
+            cds: list[MusicBrainzCD] = [MusicBrainzCD._parse_musicbrainz_result(release) for release in releases]
 
             if len(cds) < 2 or (not choice):
                 return cds[0]
@@ -98,19 +123,19 @@ class CD:
         year: str = str(parser.parse(result.get('date')).year) if 'date' in result and result['date'] else None
         disc_count: int = len(result['medium-list'])
 
-        return CD(id, title, artist, year, disc_count)
+        return MusicBrainzCD(id, title, artist, year, disc_count)
 
-    def _get_tracks(self) -> list[Track]:
+    def _get_tracks(self) -> list[MusicBrainzTrack]:
         """
         Call MusicBrainz to get the track list for all CDs in the release.
         """
-        result = musicbrainzngs.get_release_by_id(self.id, includes=['recordings'])
-        self.tracks: list[Track] = []
+        result = musicbrainzngs.get_release_by_id(self.id, includes=['recordings', 'artist-credits'])
+        retrieved_tracks: list[MusicBrainzTrack] = []
         for disc in result['release']['medium-list']:
-            self.tracks.extend([Track.parse_musicbrainz_result(track_result, disc['position'])
+            retrieved_tracks.extend([MusicBrainzTrack.parse_source_result(track_result, disc['position'])
                                 for track_result in disc['track-list']])
 
-        return self.tracks
+        return retrieved_tracks
 
     def __str__(self):
         return f"💿 {self.artist} - {self.title} ({self.year})"
